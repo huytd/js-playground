@@ -1,0 +1,17 @@
+@tailwind base;
+
+@font-face {
+    font-family: 'Cascadia Mono';
+    src: url('cascadiamono-webfont.woff2') format('woff2'),
+         url('cascadiamono-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@tailwind components;
+
+@tailwind utilities;
+
+.font-cascadia {
+    font-family: 'Cascadia Mono', monospace;
+}

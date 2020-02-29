@@ -1,0 +1,21 @@
+{
+  "name": "jsplayground",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Huy",
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "dev": "parcel ./index.html",
+    "dist": "parcel build ./index.html"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^3.1.1",
+    "parcel-bundler": "^1.12.4",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "tailwindcss": "^1.2.0"
+  },
+  "devDependencies": {
+    "sass": "^1.26.1"
+  }
+}
