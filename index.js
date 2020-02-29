@@ -45,7 +45,7 @@ const VisualString = (props) => {
     };
     const chars = props.value.split('');
     return <div className={"py-1 px-2 mb-2 bg-red-100 text-red-500 border border-red-500 flex flex-row flex-wrap"}>
-        {chars.length === 1 ? chars[0] : chars.map((c, i) => <div key={i} className={"pt-5 px-2 bg-red-200 m-1 relative " + (isMatched(i) ? "bg-red-400" : "")}>
+        {chars.length === 1 ? chars[0] : chars.map((c, i) => <div key={i} className={"pt-5 px-2 bg-red-200 m-1 relative " + (isMatched(i) ? "bg-red-400 text-white" : "")}>
             <span className={"absolute top-0 left-0 text-xs ml-1 opacity-50 " + (isMatched(i) ? "text-white" : "")}>{i}</span>
             {c}
         </div>)}
@@ -103,45 +103,64 @@ const VisualElement = (props) => {
 
 const VisualLog = (props) => <div className={"p-2 mb-2 bg-gray-100 text-gray-600 border border-gray-500 block clear-both"}> {props.value.toString()} </div>;
 
+const useStoredState = (defaultValue, key) => {
+    const [value, setValue] = React.useState(() => {
+        const stickyValue = window.localStorage.getItem(key);
+        return stickyValue !== null
+            ? JSON.parse(stickyValue)
+            : defaultValue;
+    });
+    React.useEffect(() => {
+        window.localStorage.setItem(key, JSON.stringify(value));
+    }, [key, value]);
+    return [value, setValue];
+};
+
 const App = () => {
     const editorRef = useRef();
     const [result, setResult] = useState([]);
     const [logContent, setLog] = useState([]);
+    const [code, setCode] = useStoredState(PLACEHOLDER_CODE, 'js-playground-saved-code');
 
     const handleEditorDidMount = (ref, editor) => {
         editorRef.current = ref;
     };
 
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && e.ctrlKey) {
-            if (editorRef && editorRef.current) {
-                const code = editorRef.current();
-                const debugArr = [];
-                const logList = [];
-                const debug = (value, index) => {
-                    debugArr.push({
-                        value: JSON.parse(JSON.stringify(value)),
-                        param: index
-                    });
-                };
-                const log = (...args) => {
-                    debugArr.push({
-                        value: "@LOG=" + args.join(" "),
-                        param: -1
-                    });
-                };
-                const appLogger = (...args) => {
-                    logList.push(args.join(" "));
-                };
-                try {
-                    eval(code);
-                } catch (error) {
-                    const msg = `Line ${error.lineNumber} Column ${error.columnNumber}: ${error.message}`;
-                    appLogger(msg);
-                }
-                setResult(debugArr);
-                setLog(logList);
+    const executeCode = () => {
+        if (editorRef && editorRef.current) {
+            const code = editorRef.current();
+            const debugArr = [];
+            const logList = [];
+            const debug = (value, index) => {
+                debugArr.push({
+                    value: JSON.parse(JSON.stringify(value)),
+                    param: index
+                });
+            };
+            const log = (...args) => {
+                debugArr.push({
+                    value: "@LOG=" + args.join(" "),
+                    param: -1
+                });
+            };
+            const appLogger = (...args) => {
+                logList.push(args.join(" "));
+            };
+            try {
+                eval(code);
+            } catch (error) {
+                const msg = `Line ${error.lineNumber} Column ${error.columnNumber}: ${error.message}`;
+                appLogger(msg);
             }
+            setCode(code);
+            setResult(debugArr);
+            setLog(logList);
+        }
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            executeCode();
         }
     };
 
@@ -161,12 +180,13 @@ const App = () => {
                         enabled: false
                     }
                 }}
-                value={PLACEHOLDER_CODE}
+                value={code}
                 editorDidMount={handleEditorDidMount}
             />
-            <pre className={"bg-gray-100 h-20 p-3 border-gray-300 border-t overflow-y-auto"}>
-                {logContent.length ? logContent.join("\n") : "Press Ctrl + Enter to run the code."}
-            </pre>
+            <div className={"bg-gray-100 h-20 p-3 border-gray-300 border-t flex flex-row"}>
+                <pre className={"flex-1 overflow-y-auto"}>{logContent.length ? logContent.join("\n") : "Press Ctrl + Enter to run the code."}</pre>
+                <button className={"m-1 px-3 bg-green-500 text-white rounded-lg"} onClick={() => executeCode()}>Run</button>
+            </div>
         </div>
         <div className={"flex-1 bg-gray-100 flex flex-col border-l border-gray-300"}>
             <div className={"flex-1 overflow-y-auto p-3"}>
