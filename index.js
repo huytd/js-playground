@@ -43,13 +43,14 @@ const VisualString = (props) => {
         }
         return false;
     };
+    const chars = props.value.split('');
     return <div className={"py-1 px-2 mb-2 bg-red-100 text-red-500 border border-red-500 flex flex-row flex-wrap"}>
-        {props.value.split('').map((c, i) => <div key={i} className={"pt-5 px-2 bg-red-200 m-1 relative " + (isMatched(i) ? "bg-red-400" : "")}>
+        {chars.length === 1 ? chars[0] : chars.map((c, i) => <div key={i} className={"pt-5 px-2 bg-red-200 m-1 relative " + (isMatched(i) ? "bg-red-400" : "")}>
             <span className={"absolute top-0 left-0 text-xs ml-1 opacity-50 " + (isMatched(i) ? "text-white" : "")}>{i}</span>
             {c}
         </div>)}
     </div>;
-}
+};
 
 const VisualObject = (props) => {
     const content = [];
