@@ -5,8 +5,8 @@
   "author": "Huy",
   "license": "BSD-3-Clause",
   "scripts": {
-    "dev": "parcel ./index.html",
-    "dist": "parcel build ./index.html"
+    "dev": "parcel ./src/index.html",
+    "dist": "parcel build ./src/index.html"
   },
   "dependencies": {
     "@monaco-editor/react": "^3.1.1",
