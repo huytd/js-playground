@@ -2,6 +2,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './style.scss';
 import Editor from '@monaco-editor/react';
+import marked from 'marked';
 
 const PLACEHOLDER_CODE = `const swap = (array, i, j) => {
   log("Swapping", array[i], array[j]);
@@ -29,7 +30,11 @@ const result = bubbleSort(input);
 log(">> Result", result);
 debug(result);`;
 
-const VisualBoolean = (props) => <div className={"py-1 px-2 mb-2 bg-purple-100 text-purple-500 rounded-md border border-b-2 border-purple-500"}> {props.value.toString()} </div>;
+const VisualBoolean = (props) => {
+    const value = props.value;
+    const color = value ? "green" : "red";
+    return <div className={`py-1 px-2 mb-2 bg-${color}-100 text-${color}-500 rounded-md border border-b-2 border-${color}-500`}> {value.toString()} </div>;
+};
 
 const VisualNumber = (props) => <div className={"py-1 px-2 mb-2 bg-blue-100 text-blue-500 rounded-md border border-b-2 border-blue-500"}> {props.value} </div>;
 
@@ -104,7 +109,9 @@ const VisualElement = (props) => {
     return null;
 };
 
-const VisualLog = (props) => <div className={"p-2 mb-2 bg-gray-100 text-gray-600 rounded-md border border-b-2 border-gray-500 block clear-both"}> {props.value.toString()} </div>;
+const VisualLog = (props) =>
+    <div dangerouslySetInnerHTML={{__html: marked(props.value.toString())}}
+         className={"p-2 mb-2 bg-gray-100 text-gray-600 rounded-md border border-b-2 border-gray-500 block clear-both markdown"}/>;
 
 const useStoredState = (defaultValue, key) => {
     const [value, setValue] = React.useState(() => {

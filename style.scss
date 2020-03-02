@@ -15,3 +15,20 @@
 .font-cascadia {
     font-family: 'Cascadia Mono', monospace;
 }
+
+.markdown {
+    b, strong {
+        @apply font-bold text-gray-700;
+    }
+
+    i { @apply italic; }
+    u { @apply underline; }
+
+    code {
+        @apply bg-red-100 text-red-600 px-2;
+    }
+
+    p:not(:first-child) {
+        @apply mt-3;
+    }
+}
