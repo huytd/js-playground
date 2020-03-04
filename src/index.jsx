@@ -28,15 +28,21 @@ log(">> Input", input);
 debug(input);
 const result = bubbleSort(input);
 log(">> Result", result);
-debug(result);`;
+debug(result);
+
+/* Usage Tips:
+- Use 'log()' command to print a log line.
+- Use 'debug()' command to visualize a variable
+- To use Dark Mode, execute this command 'hack.ui.darkMode(true);'
+*/`;
 
 const VisualBoolean = (props) => {
     const value = props.value;
     const color = value ? "green" : "red";
-    return <div className={`py-1 px-2 mb-2 bg-${color}-100 text-${color}-500 rounded-md border border-b-2 border-${color}-500`}> {value.toString()} </div>;
+    return <div className={`py-1 px-2 mb-2 bg-${color}-100 text-${color}-500 dark-mode:bg-${color}-800 dark-mode:text-${color}-300 rounded-md border border-b-2 border-${color}-500 dark-mode:border-${color}-600`}> {value.toString()} </div>;
 };
 
-const VisualNumber = (props) => <div className={"py-1 px-2 mb-2 bg-blue-100 text-blue-500 rounded-md border border-b-2 border-blue-500"}> {props.value} </div>;
+const VisualNumber = (props) => <div className={"py-1 px-2 mb-2 bg-blue-100 text-blue-500 dark-mode:bg-blue-800 dark-mode:text-blue-300 rounded-md border border-b-2 border-blue-500 dark-mode:border-blue-600"}> {props.value} </div>;
 
 const VisualString = (props) => {
     const isMatched = (index) => {
@@ -52,8 +58,8 @@ const VisualString = (props) => {
         if (c === ' ') return '⠀'; // This is not a space
         else return c;
     });
-    return <div className={"py-1 px-2 mb-2 bg-red-100 text-red-500 rounded-md border border-b-2 border-red-500 flex flex-row flex-wrap"}>
-        {chars.length === 1 ? chars[0] : chars.map((c, i) => <div key={i} className={"pt-5 px-2 bg-red-200 m-1 relative " + (isMatched(i) ? "bg-red-400 text-white" : "")}>
+    return <div className={"py-1 px-2 mb-2 bg-red-100 text-red-500 dark-mode:bg-red-900 dark-mode:text-red-300 rounded-md border border-b-2 border-red-500 dark-mode:border-red-600 flex flex-row flex-wrap"}>
+        {chars.length === 1 ? chars[0] : chars.map((c, i) => <div key={i} className={"pt-5 px-2 m-1 relative " + (isMatched(i) ? "bg-red-400 text-white dark-mode:bg-red-700 dark-mode:text-red-200" : "bg-red-200 dark-mode:bg-red-800 text-red-300")}>
             <span className={"absolute top-0 left-0 text-xs ml-1 opacity-50 " + (isMatched(i) ? "text-white" : "")}>{i}</span>
             {c}
         </div>)}
@@ -66,7 +72,7 @@ const VisualObject = (props) => {
     for (let key in obj) {
         content.push(<div key={Date.now() + key} className={"block p-2"}><div className={"inline-block w-1/12"}>{key}:</div><VisualElement value={obj[key]}/></div>);
     }
-    return <div className={"py-1 px-2 mb-2 bg-orange-100 text-orange-500 rounded-md border border-b-2 border-red-500 flex flex-row"}> {content} </div>;
+    return <div className={"py-1 px-2 mb-2 bg-orange-100 text-orange-500 dark-mode:bg-mono-700 rounded-md border border-b-2 border-orange-500 dark-mode:border-mono-500 flex flex-row"}> {content} </div>;
 };
 
 const VisualArray = (props) => {
@@ -79,8 +85,8 @@ const VisualArray = (props) => {
         }
         return false;
     };
-    return <div className={"py-1 px-2 mb-2 bg-gray-100 text-gray-500 rounded-md border border-b-2 border-gray-500 flex flex-row flex-wrap"}>
-        {props.value.map((c, i) => <div key={i} className={"pt-5 px-2 bg-gray-200 m-1 relative " + (isMatched(i) ? "bg-gray-400" : "")}>
+    return <div className={"py-1 px-2 mb-2 bg-gray-100 dark-mode:bg-mono-700 text-gray-500 dark-mode:text-mono-100 rounded-md border border-b-2 border-gray-500 dark-mode:border-mono-500 flex flex-row flex-wrap"}>
+        {props.value.map((c, i) => <div key={i} className={"pt-5 px-2 bg-gray-200 m-1 relative " + (isMatched(i) ? "bg-gray-400 dark-mode:bg-mono-400" : "dark-mode:bg-mono-600")}>
             <span className={"absolute top-0 left-0 text-xs ml-1 opacity-50 " + (isMatched(i) ? "text-white" : "")}>{i}</span>
             <VisualElement value={c}/>
         </div>)}
@@ -111,7 +117,7 @@ const VisualElement = (props) => {
 
 const VisualLog = (props) =>
     <div dangerouslySetInnerHTML={{__html: marked(props.value.toString())}}
-         className={"p-2 mb-2 bg-gray-100 text-gray-600 rounded-md border border-b-2 border-gray-500 block clear-both markdown"}/>;
+         className={"p-2 mb-2 bg-gray-100 text-gray-600 dark-mode:bg-mono-800 dark-mode:text-mono-100 rounded-md border border-b-2 border-gray-500 dark-mode:border-mono-700 block clear-both markdown"}/>;
 
 const useStoredState = (defaultValue, key) => {
     const [value, setValue] = React.useState(() => {
@@ -131,10 +137,10 @@ const App = () => {
     const [result, setResult] = useState([]);
     const [logContent, setLog] = useState([]);
     const [code, setCode] = useStoredState(PLACEHOLDER_CODE, 'js-playground-saved-code');
+    const [darkMode, setDarkMode] = useStoredState(false, 'js-playground-dark-mode');
 
     const handleEditorDidMount = (ref, editor) => {
         editorRef.current = ref;
-        console.log("EDITOR",editor);
     };
 
     const executeCode = () => {
@@ -142,6 +148,7 @@ const App = () => {
             const code = editorRef.current();
             const debugArr = [];
             const logList = [];
+            const settings = [];
             const debug = (value, index) => {
                 debugArr.push({
                     value: JSON.parse(JSON.stringify(value)),
@@ -157,6 +164,16 @@ const App = () => {
             const appLogger = (...args) => {
                 logList.push(args.join(" "));
             };
+            const hack = {
+                ui: {
+                    darkMode: (flag) => {
+                        settings.push({
+                            name: 'darkMode',
+                            value: flag
+                        });
+                    }
+                }
+            };
             try {
                 eval(code);
             } catch (error) {
@@ -166,6 +183,17 @@ const App = () => {
             setCode(code);
             setResult(debugArr);
             setLog(logList);
+            if (settings.length) {
+                settings.forEach(setting => {
+                    switch (setting.name) {
+                        case 'darkMode':
+                        setDarkMode(setting.value);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }
         }
     };
 
@@ -180,10 +208,11 @@ const App = () => {
         return () => window.removeEventListener("keypress", handleKeyPress);
     }, []);
 
-    return <div className={"w-screen h-screen flex flex-row text-sm font-cascadia overflow-hidden"}>
-        <div className={"resize-none w-6/12 flex flex-col"}>
+    return <div className={"w-screen h-screen flex flex-row text-sm font-cascadia overflow-hidden dark-mode:text-mono-100 " + (darkMode ? "dark-mode" : "")}>
+        <div className={"resize-none w-6/12 flex flex-col dark-mode:bg-mono-800 dark-mode:text-mono-100"}>
             <Editor
                 language="javascript"
+                theme={darkMode ? "dark" : "light"}
                 options={{
                     fontSize: 14,
                     fontFamily: 'Cascadia Mono',
@@ -194,12 +223,12 @@ const App = () => {
                 value={code}
                 editorDidMount={handleEditorDidMount}
             />
-            <div className={"bg-gray-100 h-20 p-3 border-gray-300 border-t flex flex-row"}>
-                <pre className={"flex-1 overflow-y-auto"}>{logContent.length ? logContent.join("\n") : "Press Ctrl + Enter to run the code."}</pre>
-                <button className={"m-1 px-3 bg-green-100 hover:bg-green-200 rounded-md border-green-500 text-green-700 rounded-md border border-b-2"} onClick={() => executeCode()}>Run</button>
+            <div className={"bg-gray-100 dark-mode:bg-mono-800 h-20 p-3 border-gray-300 dark-mode:border-mono-700 border-t flex flex-row"}>
+                <pre className={"flex-1 overflow-y-auto dark-mode:text-mono-100"}>{logContent.length ? logContent.join("\n") : "Press Ctrl + Enter to run the code."}</pre>
+                <button className={"m-1 px-3 bg-green-100 hover:bg-green-200 dark-mode:bg-green-600 rounded-md border-green-500 dark-mode:border-green-800 text-green-700 dark-mode:text-green-300 rounded-md border border-b-2"} onClick={() => executeCode()}>Run</button>
             </div>
         </div>
-        <div className={"flex-1 bg-gray-100 flex flex-col border-l border-gray-300"}>
+        <div className={"flex-1 bg-gray-100 dark-mode:bg-mono-800 flex flex-col border-l border-gray-300 dark-mode:border-mono-700"}>
             <div className={"flex-1 overflow-y-auto p-3 sketch-area"}>
                 {result.map((entry, i) => {
                     if (typeof entry.value === 'string' && entry.value.startsWith("@LOG=")) {
