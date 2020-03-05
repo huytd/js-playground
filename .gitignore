@@ -6,3 +6,6 @@ build
 dist
 .dist
 .idea
+*.sublime-project
+*.sublime-workspace
+yarn-error.log
