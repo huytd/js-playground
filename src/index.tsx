@@ -1,5 +1,5 @@
-import React, {useRef, useState, useEffect} from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import './style.scss';
 import Editor from '@monaco-editor/react';
 import { PLACEHOLDER_CODE } from './constants';
@@ -7,10 +7,14 @@ import { useStoredState, CodeExecutor } from './helpers';
 import { VisualElement } from './components/VisualElement';
 import { VisualLog } from './components/VisualLog';
 
+interface EditorFunction {
+    (): string;
+}
+
 const App = () => {
-    const editorRef = useRef();
-    const [result, setResult] = useState([]);
-    const [logContent, setLog] = useState([]);
+    const editorRef = React.useRef();
+    const [result, setResult] = React.useState([]);
+    const [logContent, setLog] = React.useState([]);
     const [code, setCode] = useStoredState(PLACEHOLDER_CODE, 'js-playground-saved-code');
     const [darkMode, setDarkMode] = useStoredState(false, 'js-playground-dark-mode');
 
@@ -19,8 +23,10 @@ const App = () => {
     };
 
     const executeCode = () => {
-        if (editorRef && editorRef.current) {
-            const code = editorRef.current();
+        // Stupidly enforce the editor object to be always non-undefined and callable
+        const editor: EditorFunction = editorRef && editorRef!.current;
+        if (editor) {
+            const code = editor();
             const [debugee, logee, settings] = CodeExecutor(code);
             setCode(code);
             setResult(debugee);
@@ -45,7 +51,7 @@ const App = () => {
         }
     };
 
-    useEffect(() => {
+    React.useEffect(() => {
         window.addEventListener("keypress", handleKeyPress);
         return () => window.removeEventListener("keypress", handleKeyPress);
     }, []);

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 export const uniqueId = () => Date.now() + Math.random().toString(36).substr(2, 9);
 
@@ -14,6 +14,13 @@ export const useStoredState = (defaultValue, key) => {
     }, [key, value]);
     return [value, setValue];
 };
+
+interface ExecutableWindow extends Window {
+    debug(value, index): void;
+    log(...args): void;
+    hack: any;
+    eval(code): void;
+}
 
 export const CodeExecutor = (code) => {
     const debugArr = [];
@@ -44,14 +51,15 @@ export const CodeExecutor = (code) => {
             }
         }
     };
-    let container = document.createElement('iframe');
-    container.width = container.height = 0;
-    container.style.opacity = 0;
-    container.style.border = 0;
+    let container: HTMLIFrameElement = document.createElement('iframe');
+    container.width = "0";
+    container.height = "0";
+    container.style.opacity = "0";
+    container.style.border = "0";
     container.style.position = 'absolute';
     container.style.top = '-100px';
     document.body.appendChild(container);
-    const win = container.contentWindow;
+    const win = container.contentWindow as ExecutableWindow;
     win.debug = debug;
     win.log = log;
     win.hack = hack;
