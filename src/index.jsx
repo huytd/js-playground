@@ -132,6 +132,56 @@ const useStoredState = (defaultValue, key) => {
     return [value, setValue];
 };
 
+const CodeExecutor = (code) => {
+    const debugArr = [];
+    const logList = [];
+    const settings = [];
+    const debug = (value, index) => {
+        debugArr.push({
+            value: JSON.parse(JSON.stringify(value)),
+            param: index
+        });
+    };
+    const log = (...args) => {
+        debugArr.push({
+            value: "@LOG=" + args.join(" "),
+            param: -1
+        });
+    };
+    const logReporter = (...args) => {
+        logList.push(args.join(" "));
+    };
+    const hack = {
+        ui: {
+            darkMode: (flag) => {
+                settings.push({
+                    name: 'darkMode',
+                    value: flag
+                });
+            }
+        }
+    };
+    let container = document.createElement('iframe');
+    container.width = container.height = 0;
+    container.style.opacity = 0;
+    container.style.border = 0;
+    container.style.position = 'absolute';
+    container.style.top = '-100px';
+    document.body.appendChild(container);
+    const win = container.contentWindow;
+    win.debug = debug;
+    win.log = log;
+    win.hack = hack;
+    try {
+        win.eval(code);
+    } catch (error) {
+        const msg = `Line ${error.lineNumber} Column ${error.columnNumber}: ${error.message}`;
+        logReporter(msg);
+    }
+    document.body.removeChild(container);
+    return [debugArr, logList, settings];
+};
+
 const App = () => {
     const editorRef = useRef();
     const [result, setResult] = useState([]);
@@ -146,43 +196,10 @@ const App = () => {
     const executeCode = () => {
         if (editorRef && editorRef.current) {
             const code = editorRef.current();
-            const debugArr = [];
-            const logList = [];
-            const settings = [];
-            const debug = (value, index) => {
-                debugArr.push({
-                    value: JSON.parse(JSON.stringify(value)),
-                    param: index
-                });
-            };
-            const log = (...args) => {
-                debugArr.push({
-                    value: "@LOG=" + args.join(" "),
-                    param: -1
-                });
-            };
-            const appLogger = (...args) => {
-                logList.push(args.join(" "));
-            };
-            const hack = {
-                ui: {
-                    darkMode: (flag) => {
-                        settings.push({
-                            name: 'darkMode',
-                            value: flag
-                        });
-                    }
-                }
-            };
-            try {
-                eval(code);
-            } catch (error) {
-                const msg = `Line ${error.lineNumber} Column ${error.columnNumber}: ${error.message}`;
-                appLogger(msg);
-            }
+            const [debugee, logee, settings] = CodeExecutor(code);
             setCode(code);
-            setResult(debugArr);
-            setLog(logList);
+            setResult(debugee);
+            setLog(logee);
             if (settings.length) {
                 settings.forEach(setting => {
                     switch (setting.name) {
