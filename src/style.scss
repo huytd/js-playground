@@ -36,3 +36,12 @@
 .monaco-aria-container {
     display: none;
 }
+
+.grid-row {
+    div {
+        @apply my-1;
+        &:not(:last-child) {
+            @apply mr-2 my-1;
+        }
+    }
+}

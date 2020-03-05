@@ -93,6 +93,33 @@ const VisualArray = (props) => {
     </div>;
 };
 
+const VisualGrid = (props) => {
+    const index = props.index || [];
+    const isMatched = (x, y) => index.some(p => p[0] === x && p[1] === y);
+    return <div className={"py-1 px-2 mb-2 bg-gray-100 dark-mode:bg-mono-700 text-gray-500 dark-mode:text-mono-100 rounded-md border border-b-2 border-gray-500 dark-mode:border-mono-500"}>
+        <div className={"flex flex-col"}>
+            {props.value.map((row, y) => <div className={"flex flex-row grid-row"}>
+                {row.map((col, x) => <div className={"px-1 " + (isMatched(x, y) ? "bg-gray-400" : "bg-gray-200")}>
+                    <VisualElement value={col}/>
+                </div>)}
+            </div>)}
+        </div>
+    </div>;
+};
+
+const isGrid = (input) => {
+    const notEverythingIsArray = input.some(c => !Array.isArray(c));
+    if (!notEverythingIsArray) {
+        if (input.length > 0) {
+            const firstRow = input[0];
+            const lengthOfFirstRow = firstRow.length;
+            const notEverythingHasSameLength = input.some(c => c.length !== lengthOfFirstRow);
+            return !notEverythingHasSameLength;
+        }
+    }
+    return false;
+};
+
 const VisualElement = (props) => {
     const obj = props.value;
     const param = props.param;
@@ -107,7 +134,11 @@ const VisualElement = (props) => {
     }
     if (typeof obj === 'object') {
         if (Array.isArray(obj)) {
-            return <VisualArray value={obj} index={param}/>;
+            if (isGrid(obj)) {
+                return <VisualGrid value={obj} index={param}/>;
+            } else {
+                return <VisualArray value={obj} index={param}/>;
+            }
         } else {
             return <VisualObject value={obj}/>;
         }
