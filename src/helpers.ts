@@ -74,14 +74,14 @@ export const CodeExecutor = (code) => {
 };
 
 export const fetchJSONFromUrl = async (url) => {
-    const fetchUrl = `http://snackycors.herokuapp.com/${url}`;
+    const fetchUrl = `https://snackycors.herokuapp.com/${url}`;
     const request = await fetch(fetchUrl);
     const data = await request.json();
     return data;
 };
 
 export const fetchTextFromURL = async (url) => {
-    const fetchUrl = `http://snackycors.herokuapp.com/${url}`;
+    const fetchUrl = `https://snackycors.herokuapp.com/${url}`;
     const request = await fetch(fetchUrl);
     const data = await request.text();
     return data;
