@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import './style.scss';
 import Editor from '@monaco-editor/react';
 import { PLACEHOLDER_CODE } from './constants';
-import { useStoredState, CodeExecutor } from './helpers';
+import { useStoredState, CodeExecutor, fetchTextFromURL, queryParam } from './helpers';
 import { VisualElement } from './components/VisualElement';
 import { VisualLog } from './components/VisualLog';
 
@@ -15,8 +15,22 @@ const App = () => {
     const editorRef = React.useRef();
     const [result, setResult] = React.useState([]);
     const [logContent, setLog] = React.useState([]);
-    const [code, setCode] = useStoredState(PLACEHOLDER_CODE, 'js-playground-saved-code');
     const [darkMode, setDarkMode] = useStoredState(false, 'js-playground-dark-mode');
+    const sourceUrl = queryParam('gist');
+    const [code, setCode] = useStoredState(PLACEHOLDER_CODE, 'js-playground-saved-code');
+
+    React.useEffect(() => {
+        (async () => {
+            if (sourceUrl) {
+                try {
+                    const content = await fetchTextFromURL(sourceUrl);
+                    if (content) {
+                        setCode(content);
+                    }
+                } catch (err) { }
+            }
+        })();
+    }, []);
 
     const handleEditorDidMount = (ref, editor) => {
         editorRef.current = ref;

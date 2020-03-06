@@ -72,3 +72,22 @@ export const CodeExecutor = (code) => {
     document.body.removeChild(container);
     return [debugArr, logList, settings];
 };
+
+export const fetchJSONFromUrl = async (url) => {
+    const fetchUrl = `http://snackycors.herokuapp.com/${url}`;
+    const request = await fetch(fetchUrl);
+    const data = await request.json();
+    return data;
+};
+
+export const fetchTextFromURL = async (url) => {
+    const fetchUrl = `http://snackycors.herokuapp.com/${url}`;
+    const request = await fetch(fetchUrl);
+    const data = await request.text();
+    return data;
+};
+
+export const queryParam = (key) => {
+    const params = new URLSearchParams(window.location.search.substring(1));
+    return params.get(key);
+};
