@@ -16,6 +16,7 @@
     "marked": "^0.8.0",
     "parcel-bundler": "^1.12.4",
     "react": "^16.13.0",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.0",
     "tailwindcss": "^1.2.0",
     "typescript": "^3.8.3"
