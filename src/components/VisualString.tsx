@@ -14,10 +14,10 @@ export const VisualString = (props) => {
         if (c === ' ') return '⠀'; // This is not a space
         else return c;
     });
-    return <div className={"py-1 px-2 mb-2 bg-red-100 text-red-500 dark-mode:bg-red-900 dark-mode:text-red-300 rounded-sm border border-b-2 border-red-500 dark-mode:border-red-600 flex flex-col"}>
-        { chars.length > 1 && (<div className="bg-red-200 text-red-600 m-1 px-2 py-1">"{props.value}"</div>) }
+    return <div className={"py-1 px-2 mb-2 bg-green-100 text-green-500 dark-mode:bg-green-900 dark-mode:text-green-300 rounded-sm border border-b-2 border-green-500 dark-mode:border-green-600 flex flex-col"}>
+        { chars.length > 1 && (<div className="bg-green-200 text-green-600 m-1 px-2 py-1">"{props.value}"</div>) }
         <div className="flex flex-row flex-wrap">
-            {chars.length === 1 ? chars[0] : chars.map((c, i) => <div key={i} className={"pt-5 px-2 m-1 relative " + (isMatched(i) ? "bg-red-400 text-white dark-mode:bg-red-700 dark-mode:text-red-200" : "bg-red-200 dark-mode:bg-red-800 text-red-500")}>
+            {chars.length === 1 ? chars[0] : chars.map((c, i) => <div key={i} className={"pt-5 px-2 m-1 relative " + (isMatched(i) ? "bg-green-400 text-white dark-mode:bg-green-700 dark-mode:text-green-200" : "bg-green-200 dark-mode:bg-green-800 text-green-600")}>
                 <span className={"absolute top-0 left-0 text-xs ml-1 opacity-50 " + (isMatched(i) ? "text-white" : "")}>{i}</span>
                 {c}
             </div>)}
