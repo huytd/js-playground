@@ -1,7 +1,6 @@
 {
   "name": "jsplayground",
   "version": "1.0.0",
-  "main": "index.js",
   "author": "Huy",
   "license": "BSD-3-Clause",
   "scripts": {
