@@ -79,7 +79,7 @@ const App = () => {
           theme={darkMode ? "dark" : "light"}
           options={{
             fontSize: 14,
-            fontFamily: 'Cascadia Mono',
+            fontFamily: 'Iosevka Mono',
             minimap: {
               enabled: false
             }
