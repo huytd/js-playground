@@ -1,19 +1,20 @@
 @tailwind base;
 
 @font-face {
-    font-family: 'Cascadia Mono';
-    src: url('../fonts/cascadiamono-webfont.woff2') format('woff2'),
-         url('../fonts/cascadiamono-webfont.woff') format('woff');
+    font-family: 'Iosevka Mono';
+    src: url('../fonts/Iosevka-Mono.woff2') format('woff2'),
+        url('../fonts/Iosevka-Mono.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 @tailwind components;
 
 @tailwind utilities;
 
-.font-cascadia {
-    font-family: 'Cascadia Mono', monospace;
+.font-custom {
+    font-family: 'Iosevka Mono', monospace;
 }
 
 .markdown {
