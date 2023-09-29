@@ -71,7 +71,7 @@ const App = () => {
     return () => window.removeEventListener("keypress", handleKeyPress);
   }, []);
 
-  return <div className={"w-screen h-screen text-sm font-custom overflow-hidden dark-mode:text-mono-100 " + (darkMode ? "dark-mode" : "")}>
+  return <div className={"w-100vh h-100vh text-sm font-custom overflow-hidden dark-mode:text-mono-100 " + (darkMode ? "dark-mode" : "")}>
     <SplitPane split="vertical" defaultSize="50%" minSize={500}>
       <div className={"h-full flex flex-col dark-mode:bg-mono-800 dark-mode:text-mono-100"}>
         <Editor
@@ -84,7 +84,6 @@ const App = () => {
               enabled: false
             }
           }}
-          
           value={code}
           editorDidMount={handleEditorDidMount}
         />
